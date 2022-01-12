@@ -1,3 +1,5 @@
+<%@page import="Comment_manager.Comment"%>
+<%@page import="Comment_manager.CMCommentImp"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" 
 	pageEncoding="ISO-8859-1"%>
 <%@page import="Invitation_manager.Invitation"%>
@@ -337,33 +339,41 @@
 															
 															<span><%= lslike.size() %></span>
 														</li> 
-														<li><a href="#" title="" class="com"><img src="images/com.png" alt=""> Comment</a></li>
+														<li><a href="#mycomment" title="" class="com"><img src="images/com.png" alt=""> Comment</a></li>
 													</ul>
 													<a><i class="la la-eye"></i>Views</a>
 												</div>
 												
 											</div><!--post-bar end-->
-											<div class="comment-section">
+											<div class="comment-section" id="mycomment">
+												<%
+													CMCommentImp cmit=new CMCommentImp();
+													List<Comment> lstm=cmit.getAllCommentByPoste(post.getId());
+													if(lstm!=null){
+													for(Comment cm:lstm){
+												%>
 												<div class="comment-sec">
 													<ul>
 														<li>
 															<div class="comment-list">
-																<div class="comment">
-																	<h3></h3>
-																	<span><img src="images/clock.png" alt=""></span>
-																	<p></p>
+																<div class="comment">																	
+																	<span><%= cm.getDate() %></span>
+																	<p><%= cm.getContenu() %> </p>
+																	<a href="#" title=""><i class="fa fa-reply-all"></i>Reply</a>
 																</div>
-															</div><!--comment-list end-->
+															</div>
 														</li>
 													</ul>
 												</div><!--comment-sec end-->
+												<% }} %>
 												<div class="post-comment">
 													<div class="cm_img">
 														<img src="http://via.placeholder.com/40x40" alt="">
 													</div>
 													<div class="comment_box">
-														<form>
-															<input type="text" placeholder="Post a comment">
+														<form method="POST">
+															<input type="text" placeholder="Post a comment" name="commentaire">
+															<input type="hidden" name="idcomt" value="<%= post.getId() %>">
 															<button type="submit">Send</button>
 														</form>
 													</div>
@@ -372,6 +382,15 @@
 										</div>
 									</div><!--posts-section end-->
 									<%} %>
+										<%
+											CMCommentImp cmi=new CMCommentImp();
+											String comment=request.getParameter("commentaire");											
+											if(comment!=null){
+												int idcomt=Integer.parseInt(request.getParameter("idcomt"));
+												Comment c=new Comment(comment,u.getId(),idcomt);
+												cmi.addComment(c);
+											}
+										%>
 								</div><!--main-ws-sec end-->
 							</div>
 							
